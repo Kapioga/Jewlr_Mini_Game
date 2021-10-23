@@ -1,0 +1,41 @@
+[gd_scene load_steps=5 format=2]
+
+[ext_resource path="res://Walls.gd" type="Script" id=1]
+[ext_resource path="res://Artwork/Stalk.png" type="Texture" id=2]
+
+[sub_resource type="RectangleShape2D" id=16]
+extents = Vector2( 9.60001, 59.3765 )
+
+[sub_resource type="RectangleShape2D" id=18]
+extents = Vector2( 10, 80 )
+
+[node name="Node2D" type="Node2D"]
+
+[node name="Walls" type="StaticBody2D" parent="."]
+script = ExtResource( 1 )
+
+[node name="LowerWall" type="Sprite" parent="Walls"]
+position = Vector2( 504, 420 )
+scale = Vector2( 2.5, 2 )
+texture = ExtResource( 2 )
+
+[node name="LowerWallColl" type="CollisionShape2D" parent="Walls"]
+position = Vector2( 504, 420 )
+scale = Vector2( 2.5, 2.021 )
+shape = SubResource( 16 )
+
+[node name="UpperWall" type="Sprite" parent="Walls"]
+position = Vector2( 504, 30 )
+scale = Vector2( 2.5, 2 )
+texture = ExtResource( 2 )
+
+[node name="UpperWallColl" type="CollisionShape2D" parent="Walls"]
+position = Vector2( 496, 30 )
+scale = Vector2( 2.18421, 2.02113 )
+shape = SubResource( 16 )
+
+[node name="PointArea" type="Area2D" parent="Walls"]
+
+[node name="PointArea" type="CollisionShape2D" parent="Walls/PointArea"]
+position = Vector2( 504, 224 )
+shape = SubResource( 18 )

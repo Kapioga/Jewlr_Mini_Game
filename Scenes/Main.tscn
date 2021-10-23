@@ -1,0 +1,219 @@
+[gd_scene load_steps=21 format=2]
+
+[ext_resource path="res://Artwork/Boardwalk.png" type="Texture" id=1]
+[ext_resource path="res://Artwork/Player-Sheet.png" type="Texture" id=2]
+[ext_resource path="res://Scenes/Player.gd" type="Script" id=3]
+[ext_resource path="res://Artwork/Boardwalk top.png" type="Texture" id=4]
+[ext_resource path="res://Artwork/Wall.png" type="Texture" id=5]
+[ext_resource path="res://Scenes/Walls.tscn" type="PackedScene" id=6]
+
+[sub_resource type="Shader" id=2]
+code = "shader_type canvas_item;
+
+uniform vec2 direction = vec2(1.0, 0.0);
+uniform float speed_scale = 0.05;
+
+void fragment(){
+	vec2 move = direction * TIME * speed_scale;
+	COLOR = texture(TEXTURE, UV + move);
+}"
+
+[sub_resource type="ShaderMaterial" id=3]
+shader = SubResource( 2 )
+shader_param/direction = Vector2( 1, 0 )
+shader_param/speed_scale = 0.05
+
+[sub_resource type="Shader" id=4]
+code = "shader_type canvas_item;
+
+uniform vec2 direction = vec2(1.0, 0.0);
+uniform float speed_scale = 0.1;
+
+void fragment(){
+	vec2 move = direction * TIME * speed_scale;
+	COLOR = texture(TEXTURE, UV + move);
+}"
+
+[sub_resource type="ShaderMaterial" id=5]
+render_priority = 1
+shader = SubResource( 4 )
+shader_param/direction = Vector2( 4, 0 )
+shader_param/speed_scale = 0.1
+
+[sub_resource type="RectangleShape2D" id=6]
+extents = Vector2( 520, 48 )
+
+[sub_resource type="AtlasTexture" id=8]
+atlas = ExtResource( 2 )
+region = Rect2( 0, 0, 50, 35 )
+
+[sub_resource type="AtlasTexture" id=9]
+atlas = ExtResource( 2 )
+region = Rect2( 50, 0, 50, 35 )
+
+[sub_resource type="SpriteFrames" id=10]
+animations = [ {
+"frames": [ SubResource( 8 ), SubResource( 9 ) ],
+"loop": true,
+"name": "default",
+"speed": 5.0
+}, {
+"frames": [  ],
+"loop": true,
+"name": "New Anim",
+"speed": 5.0
+} ]
+
+[sub_resource type="RectangleShape2D" id=11]
+extents = Vector2( 56, 24 )
+
+[sub_resource type="RectangleShape2D" id=15]
+extents = Vector2( 56, 32 )
+
+[sub_resource type="RectangleShape2D" id=1]
+extents = Vector2( 0.8, 328 )
+
+[sub_resource type="Shader" id=12]
+code = "shader_type canvas_item;
+
+uniform vec2 direction = vec2(1.0, 0.0);
+uniform float speed_scale = 0.1;
+
+void fragment(){
+	vec2 move = direction * TIME * speed_scale;
+	COLOR = texture(TEXTURE, UV + move);
+}"
+
+[sub_resource type="ShaderMaterial" id=13]
+shader = SubResource( 12 )
+shader_param/direction = Vector2( 4, 0 )
+shader_param/speed_scale = 0.1
+
+[sub_resource type="RectangleShape2D" id=14]
+extents = Vector2( 512, 24 )
+
+[node name="Main Scene" type="Node2D"]
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+follow_viewport_enable = true
+
+[node name="RichTextLabel" type="RichTextLabel" parent="CanvasLayer"]
+margin_left = 24.0
+margin_top = 16.0
+margin_right = 208.0
+margin_bottom = 72.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Wall" type="TextureRect" parent="."]
+material = SubResource( 3 )
+margin_left = -16.0
+margin_right = 334.0
+margin_bottom = 200.0
+rect_min_size = Vector2( 350, 200 )
+rect_scale = Vector2( 3, 3 )
+texture = ExtResource( 5 )
+stretch_mode = 2
+__meta__ = {
+"_edit_lock_": true,
+"_edit_use_anchors_": false
+}
+
+[node name="Bottom Platform" type="TextureRect" parent="."]
+material = SubResource( 5 )
+margin_top = 40.0
+margin_right = 512.0
+margin_bottom = 175.0
+rect_scale = Vector2( 2, 4.25 )
+texture = ExtResource( 1 )
+stretch_mode = 2
+__meta__ = {
+"_edit_lock_": true,
+"_edit_use_anchors_": false
+}
+
+[node name="StaticBody2D" type="StaticBody2D" parent="Bottom Platform"]
+position = Vector2( 0, -9.41177 )
+scale = Vector2( 0.5, 0.235294 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Bottom Platform/StaticBody2D"]
+position = Vector2( 520, 552 )
+shape = SubResource( 6 )
+one_way_collision_margin = 50.0
+
+[node name="Player" type="KinematicBody2D" parent="."]
+process_priority = 2
+position = Vector2( -40, 0 )
+script = ExtResource( 3 )
+
+[node name="AnimatedSprite" type="AnimatedSprite" parent="Player"]
+position = Vector2( 160, 360 )
+scale = Vector2( 3, 3 )
+frames = SubResource( 10 )
+playing = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Player"]
+position = Vector2( 152, 352 )
+shape = SubResource( 11 )
+one_way_collision_margin = 50.0
+
+[node name="Detect" type="Area2D" parent="Player"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Player/Detect"]
+position = Vector2( 160, 352 )
+shape = SubResource( 15 )
+
+[node name="LeftResetter" type="Area2D" parent="Player"]
+__meta__ = {
+"_edit_lock_": true
+}
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Player/LeftResetter"]
+position = Vector2( 16, 320 )
+scale = Vector2( 20, 1 )
+shape = SubResource( 1 )
+
+[node name="Node2D" parent="." instance=ExtResource( 6 )]
+position = Vector2( 0, -24 )
+
+[node name="Node2D2" parent="." instance=ExtResource( 6 )]
+position = Vector2( 248, 32 )
+
+[node name="Node2D3" parent="." instance=ExtResource( 6 )]
+position = Vector2( 488, -48 )
+
+[node name="Node2D4" parent="." instance=ExtResource( 6 )]
+position = Vector2( 704, 56 )
+
+[node name="Node2D5" parent="." instance=ExtResource( 6 )]
+position = Vector2( 960, -64 )
+
+[node name="Top Platform" type="TextureRect" parent="."]
+material = SubResource( 13 )
+margin_left = -8.0
+margin_right = 508.0
+margin_bottom = 135.0
+rect_scale = Vector2( 2, 4.2 )
+texture = ExtResource( 4 )
+stretch_mode = 2
+__meta__ = {
+"_edit_lock_": true,
+"_edit_use_anchors_": false
+}
+
+[node name="StaticBody2D" type="StaticBody2D" parent="Top Platform"]
+position = Vector2( 260, 7.61905 )
+scale = Vector2( 0.5, 0.238095 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Top Platform/StaticBody2D"]
+position = Vector2( 0, -8 )
+shape = SubResource( 14 )
+one_way_collision_margin = 50.0
+
+[node name="Timer" type="Timer" parent="."]
+
+[connection signal="area_entered" from="Player/Detect" to="Player" method="_on_Detect_area_entered"]
+[connection signal="body_entered" from="Player/Detect" to="Player" method="_on_Detect_body_entered"]
+[connection signal="body_entered" from="Player/LeftResetter" to="Player" method="_on_LeftResetter_body_entered"]
+[connection signal="timeout" from="Timer" to="Player" method="_on_Timer_timeout"]
